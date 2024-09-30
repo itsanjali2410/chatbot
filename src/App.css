@@ -1,0 +1,131 @@
+/* src/Chatbot.css */
+.chatbot {
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  margin: 20px auto;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  font-family: 'Arial', sans-serif;
+}
+
+.chatbot-header {
+  background-color: #f64c4c; /* Main color */
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.chatbot-messages {
+  flex-grow: 1;
+  padding: 15px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.chatbot-input {
+  display: flex;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.chatbot input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  margin-right: 10px;
+  font-size: 16px;
+  transition: border 0.3s;
+}
+
+.chatbot input:focus {
+  border-color: #f64c4c; /* Focus color */
+  outline: none;
+}
+
+.chatbot button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #f64c4c; /* Main color */
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.chatbot button:hover {
+  background-color: #d44c4c; /* Darker shade */
+}
+
+.user.message {
+  text-align: right;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #d1ecf1; /* Light user color */
+  align-self: flex-end;
+}
+
+.bot.message {
+  text-align: left;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #e2e3e5; /* Light bot color */
+}
+
+.typing-indicator {
+  font-style: italic;
+  color: #999;
+  margin-left: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .chatbot {
+      width: 95%;
+  }
+}
+
+.user.message {
+  display: flex; /* Allow image and text to be in a row */
+  align-items: center; /* Center vertically */
+  text-align: right;
+  margin: 5px 0;
+  padding: 10px 15px;
+  border-radius: 20px;
+  background-color: #d1ecf1;
+  align-self: flex-end;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.bot.message {
+  display: flex; /* Allow image and text to be in a row */
+  align-items: center; /* Center vertically */
+  text-align: left;
+  margin: 5px 0;
+  padding: 10px 15px;
+  border-radius: 20px;
+  background-color: #e2e3e5;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.user-image, .bot-image {
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Maintain aspect ratio */
+  border-radius: 50%; /* Make them circular */
+  margin-right: 10px; /* Space between image and text */
+}
+
