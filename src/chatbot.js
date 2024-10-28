@@ -1,81 +1,84 @@
-// src/Chatbot.js
 import React, { useState, useEffect } from 'react';
-import './App.css'; // Ensure this matches your CSS file name
+import axios from 'axios';
+import './App.css'; // Ensure this is the correct path to your CSS file
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
-    const [data, setData] = useState({});
     const [isTyping, setIsTyping] = useState(false);
 
     useEffect(() => {
-        fetch('/data.json')
-            .then((response) => response.json())
-            .then((data) => {
-                setData(data);
-                const welcomeMessage = { text: "Welcome to the GRC Chatbot! Ask about ISO standards.", sender: 'bot' };
-                setMessages([welcomeMessage]);
-            })
-            .catch((error) => console.error('Error fetching data:', error));
+        const welcomeMessage = { text: "Welcome to the GRC Chatbot! Ask about ISO standards.", sender: 'bot' };
+        setMessages([welcomeMessage]);
     }, []);
 
-    const handleSendMessage = (e) => {
+    const handleSendMessage = async (e) => {
         e.preventDefault();
         if (input.trim() !== '') {
             const userMessage = { text: input, sender: 'user' };
             setMessages((prevMessages) => [...prevMessages, userMessage]);
             setInput('');
-
             setIsTyping(true);
 
-            const lowerCaseInput = input.toLowerCase();
-            let botResponse = "I'm sorry, I don't understand that.";
+            try {
+                const response = await axios.post('http://localhost:3000/api/chat', {
+                    query: input, // Sending user input to your API
+                });
 
-            for (const key in data) {
-                if (key.toLowerCase() === lowerCaseInput) {
-                    botResponse = `${key}: ${data[key].definition} \nRequirements: ${data[key].requirements.join(', ') || data[key].steps.join(', ')}`;
-                    break;
-                }
-            }
+                const botMessage = {
+                    text: response.data.response || "I'm sorry, I don't understand that.",
+                    sender: 'bot',
+                };
 
-            setTimeout(() => {
-                const botMessage = { text: botResponse, sender: 'bot' };
-                setMessages((prevMessages) => [...prevMessages, botMessage]);
+                // Simulate a typing delay
+                setTimeout(() => {
+                    setMessages((prevMessages) => [...prevMessages, botMessage]);
+                    setIsTyping(false);
+                }, 1000);
+            } catch (error) {
+                console.error('Error calling the API:', error);
+                const errorMessage = { text: 'Failed to get a response from the API.', sender: 'bot' };
+                setMessages((prevMessages) => [...prevMessages, errorMessage]);
                 setIsTyping(false);
-            }, 1000);
+            }
         }
     };
 
     return (
-        <div className="chatbot">
-            <div className="chatbot-header">GRC Chatbot</div>
+        <div className="chatbot-container">
+            <div className="chatbot-header">
+                <img src="/Untitled design.png" alt="Bot" className="bot-icon" />
+                <h1>GRC Chatbot</h1>
+            </div>
             <div className="chatbot-messages">
                 {messages.map((msg, index) => (
-                    <div key={index} className={`${msg.sender} message`}>
+                    <div key={index} className={`message ${msg.sender}`}>
                         {msg.sender === 'user' && (
                             <>
-                                <img src="path/to/user-image.png" alt="User" className="user-image" />
-                                <span>{msg.text}</span>
+                                <img src="/Governance Risk Compliance.png" alt="User" className="user-image" />
+                                <div className="message-bubble user-bubble">{msg.text}</div>
                             </>
                         )}
                         {msg.sender === 'bot' && (
                             <>
-                                <img src="path/to/bot-image.png" alt="Bot" className="bot-image" />
-                                <span>{msg.text}</span>
+                                <img src="/Untitled design.png" alt="Bot" className="bot-image" />
+                                <div className="message-bubble bot-bubble">{msg.text}</div>
                             </>
                         )}
                     </div>
                 ))}
-                {isTyping && <div className="bot message"><span className="typing-indicator">Typing...</span></div>}
+                {isTyping && <div className="message bot"><div className="typing-indicator">Typing...</div></div>}
             </div>
             <form onSubmit={handleSendMessage} className="chatbot-input">
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about GRC..."
+                    placeholder="Type here..."
                 />
-                <button type="submit">Send</button>
+                <button type="submit">
+                    <img src="path/to/send-icon.png" alt="Send" />
+                </button>
             </form>
         </div>
     );
